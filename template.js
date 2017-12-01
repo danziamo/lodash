@@ -159,7 +159,8 @@ function template(string, options) {
     (options.escape || reNoMatch).source,
     interpolate.source,
     (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source,
-    (options.evaluate || reNoMatch).source
+    (options.evaluate || reNoMatch).source,
+    (options.evaluateSingle || reNoMatch).source
   ].join('|')}|$`, 'g')
 
   // Use a sourceURL for easier debugging.
@@ -173,6 +174,7 @@ function template(string, options) {
     interpolateValue,
     esTemplateValue,
     evaluateValue,
+    evaluateSingleValue
     offset
   ) => {
     interpolateValue || (interpolateValue = esTemplateValue)
@@ -190,6 +192,10 @@ function template(string, options) {
     if (evaluateValue) {
       isEvaluating = true
       source += `';\n${evaluateValue};\n__p += '`
+    }
+    if (evaluateSingleValue) {
+      isEvaluating = true
+      source += `';\n${evaluateSingleValue};\n__p += '`
     }
     if (interpolateValue) {
       source += `' +\n((__t = (${interpolateValue})) == null ? '' : __t) +\n'`
